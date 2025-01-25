@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Oppgaver</title>
+    <link rel="stylesheet" href="/Style/style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&family=Pixelify+Sans:wght@400..700&family=Silkscreen:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="flex-stripe flex-stripe-over">
+      <p>Oppgave</p>
+      <p>Intervall</p>
+      <p>Sist utført</p>
+      <p>Ansvarlig</p>
+      <p>Utført</p>
+      <label>
+        <input type="checkbox" id="myCheckbox" class="checkbox-hidden" />
+      </label>
+    </div>
+    <div id="task-container">
+      <div class="flex-stripe">
+        <p id="task-name">Vaske gulv</p>
+        <p id="interval">14 dager</p>
+        <p id="last-done">12 dager</p>
+        <p id="person">Haakon</p>
+        <label>
+          <input type="checkbox" id="myCheckbox" onclick="done(this)" />
+        </label>
+        <button class="edit-task" onclick="editTask(this)">
+          <i class="fas fa-edit"></i>
+          <!-- Edit icon (pencil) -->
+        </button>
+      </div>
+    </div>
+    <div class="buttons">
+      <button id="add-task-btn" onclick="addTask()">Add Task</button>
+    </div>
+    <script src="/Script/script.js"></script>
+  </body>
+</html>

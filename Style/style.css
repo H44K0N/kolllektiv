@@ -1,0 +1,94 @@
+/* Reset all padding and margins */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* Include padding and borders in element size */
+  font-family: "kanit";
+  font-weight: 400;
+  font-size: larger;
+}
+
+body {
+  background-color: #f2e8cf;
+}
+.flex-stripe {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+  align-items: center;
+  background-color: #6a994e;
+  margin-left: 50px;
+  margin-right: 50px;
+  border-radius: 15px;
+
+  margin-top: 20px;
+  min-height: 50px;
+}
+.flex-stripe-over {
+  background-color: #f2e8cf;
+}
+
+input {
+  min-width: 30px;
+  min-height: 30px;
+}
+.checkbox-hidden {
+  visibility: hidden;
+}
+.buttons {
+  margin: auto;
+}
+
+.edit-task {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  color: black; /* Blue color for the icon */
+}
+
+.edit-task:hover {
+  color: #b8b2a2; /* Darker blue on hover */
+}
+
+.edit-task i {
+  font-size: 40px; /* Size of the edit icon */
+}
+
+.delete-task {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: black; /* Default color for the trash icon */
+  padding: 5px;
+}
+
+.delete-task:hover {
+  color: #b8b2a2; /* Lighter gray on hover */
+}
+
+.delete-task i {
+  font-size: 40px; /* Size of the trash icon */
+}
+
+/* Style the Add Task button */
+#add-task-btn {
+  position: fixed;
+  bottom: 20px; /* Distance from the bottom of the page */
+  left: 50%; /* Center horizontally */
+  transform: translateX(-50%); /* Adjust for center alignment */
+  background-color: #6a994e;
+  color: black;
+  border: none;
+  padding: 15px 30px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  z-index: 1000; /* Ensure it stays above other content */
+}
+
+/* Add hover effect for the button */
+#add-task-btn:hover {
+  background-color: #45a049;
+}
