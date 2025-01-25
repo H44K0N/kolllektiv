@@ -7,6 +7,9 @@
   font-weight: 400;
   font-size: larger;
 }
+#completed {
+  visibility: hidden;
+}
 
 body {
   background-color: #f2e8cf;
@@ -28,10 +31,16 @@ body {
 .flex-stripe-over {
   background-color: #f2e8cf;
 }
-
-input {
-  min-width: 30px;
-  min-height: 30px;
+label {
+  display: flex; /* Ensure label uses flexbox */
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+}
+input[type="checkbox"] {
+  display: block; /* Ensure the checkbox is treated as a block element */
+  margin: 0; /* Remove any default margins */
+  width: 40px;
+  height: 40px;
 }
 .checkbox-hidden {
   visibility: hidden;
