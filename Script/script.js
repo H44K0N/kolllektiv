@@ -1,3 +1,35 @@
+let wakeLock = null;
+
+async function requestWakeLock() {
+  try {
+    wakeLock = await navigator.wakeLock.request('screen');
+    console.log('Wake Lock is active.');
+    wakeLock.addEventListener('release', () => {
+      console.log('Wake Lock released.');
+    });
+  } catch (err) {
+    console.error('Failed to acquire Wake Lock:', err);
+  }
+}
+
+function releaseWakeLock() {
+  if (wakeLock) {
+    wakeLock.release().then(() => {
+      wakeLock = null;
+      console.log('Wake Lock released.');
+    });
+  }
+}
+
+// Request Wake Lock when the page is visible
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') {
+    requestWakeLock();
+  } else {
+    releaseWakeLock();
+  }
+});
+
 const persons = ["Haakon", "Soro", "Henrik"]; // List of persons responsible
 
 // Initialize tasks on page load
