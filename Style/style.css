@@ -20,7 +20,7 @@ body {
   display: grid;
   grid-template-columns: 2fr repeat(3, 1fr) repeat(3, auto); /* Flexible columns */
   align-items: center;
-  background-color: #6a994e;
+  background-color: initial;
   margin: 20px 50px;
   border-radius: 15px;
   min-height: 50px;

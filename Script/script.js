@@ -3,16 +3,40 @@ const persons = ["Haakon", "Soro", "Henrik"]; // List of persons responsible
 // Initialize tasks on page load
 window.onload = () => {
   loadTasks();
+  handleDailyDecrement(); // Check and decrement if needed
+  scheduleDailyUpdate(); // Schedule future decrements
 };
+
+// Sort tasks based on due dates (ascending order)
+function sortTasks() {
+  const taskContainer = document.getElementById("task-container");
+  const tasks = Array.from(taskContainer.children); // Convert NodeList to an array
+
+  // Sort tasks by due date (last-done field)
+  tasks.sort((a, b) => {
+    const aDueDate = parseInt(a.querySelector("#last-done").innerText, 10);
+    const bDueDate = parseInt(b.querySelector("#last-done").innerText, 10);
+    return aDueDate - bDueDate; // Ascending order
+  });
+
+  // Reattach tasks in the new order
+  tasks.forEach((task) => taskContainer.appendChild(task));
+
+  // Update task styles after sorting
+  updateTaskStyles();
+}
 
 // Handles checkbox behavior
 function done(currentCheckbox) {
   const flexStripe = currentCheckbox.closest(".flex-stripe");
   const lastDoneElement = flexStripe.querySelector("#last-done");
+  const intervalElement = flexStripe.querySelector("#interval");
   const personElement = flexStripe.querySelector("#person");
 
-  // Update "last-done" to 0 days
-  if (lastDoneElement) lastDoneElement.innerText = "0";
+  // Reset "last-done" to the interval value (days until due)
+  if (lastDoneElement && intervalElement) {
+    lastDoneElement.innerText = intervalElement.innerText;
+  }
 
   // Automatically uncheck the checkbox after 2 seconds
   setTimeout(() => {
@@ -27,8 +51,9 @@ function done(currentCheckbox) {
     personElement.innerText = persons[nextIndex];
   }
 
-  // Save updated tasks to Local Storage
-  saveTasks();
+  saveTasks(); // Save updated tasks
+  updateTaskStyles(); // Update styles
+  sortTasks(); // Re-sort tasks
 }
 
 // Add a new task
@@ -56,48 +81,39 @@ function addTask() {
 
   taskContainer.appendChild(newTask);
 
-  // Save updated tasks to Local Storage
-  saveTasks();
+  saveTasks(); // Save the new task
 }
 
-// Edit the specific task where the button was clicked
+// Edit a task
 function editTask(editButton) {
   const flexStripe = editButton.closest(".flex-stripe");
 
   const taskName = prompt("Enter the task name:", flexStripe.querySelector("#task-name").innerText);
-  const interval = prompt("Enter the interval (in days):", flexStripe.querySelector("#interval").innerText.split(" ")[0]);
+  const interval = prompt("Enter the interval (in days):", flexStripe.querySelector("#interval").innerText);
+  const lastDone = prompt("Enter days remaining until due:", flexStripe.querySelector("#last-done").innerText);
   const person = prompt("Enter the person responsible:", flexStripe.querySelector("#person").innerText);
 
-  if (taskName) {
-    flexStripe.querySelector("#task-name").innerText = taskName;
-  }
-  if (interval) {
-    flexStripe.querySelector("#interval").innerText = `${interval}`;
-  }
-  if (person) {
-    flexStripe.querySelector("#person").innerText = person;
-  }
+  if (taskName) flexStripe.querySelector("#task-name").innerText = taskName;
+  if (interval) flexStripe.querySelector("#interval").innerText = interval;
+  if (lastDone) flexStripe.querySelector("#last-done").innerText = lastDone;
+  if (person) flexStripe.querySelector("#person").innerText = person;
 
-  // Reset the "last-done" value
-  flexStripe.querySelector("#last-done").innerText = "0";
-
-  // Save updated tasks to Local Storage
-  saveTasks();
+  saveTasks(); // Save the edits
+  updateTaskStyles(); // Update styles
+  sortTasks(); // Re-sort tasks
 }
 
-// Delete the specific task where the button was clicked
+// Delete a task
 function deleteTask(deleteButton) {
-    const flexStripe = deleteButton.closest(".flex-stripe");
-  
-    // Show a confirmation alert
-    const confirmDelete = confirm("Are you sure you want to delete this task?");
-    if (confirmDelete) {
-      flexStripe.remove(); // Remove the task from the DOM
-      saveTasks(); // Update Local Storage after deletion
-    }
-  }
+  const flexStripe = deleteButton.closest(".flex-stripe");
 
-// Save all tasks to Local Storage
+  if (confirm("Are you sure you want to delete this task?")) {
+    flexStripe.remove();
+    saveTasks(); // Save after deletion
+  }
+}
+
+// Save tasks to Local Storage
 function saveTasks() {
   const taskContainer = document.getElementById("task-container");
   const tasks = Array.from(taskContainer.children).map((task) => ({
@@ -107,18 +123,15 @@ function saveTasks() {
     person: task.querySelector("#person").innerText,
   }));
 
-  localStorage.setItem("tasks", JSON.stringify(tasks)); // Save tasks as JSON
+  localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
 // Load tasks from Local Storage
 function loadTasks() {
   const taskContainer = document.getElementById("task-container");
+  taskContainer.innerHTML = ""; // Clear existing tasks
 
-  // Clear existing tasks to prevent duplicates
-  taskContainer.innerHTML = "";
-
-  const tasks = JSON.parse(localStorage.getItem("tasks")) || []; // Get tasks or fallback to empty array
-
+  const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
   tasks.forEach((task) => {
     const taskElement = document.createElement("div");
     taskElement.classList.add("flex-stripe");
@@ -141,37 +154,66 @@ function loadTasks() {
 
     taskContainer.appendChild(taskElement);
   });
+
+  updateTaskStyles(); // Update styles after loading
+  sortTasks();
 }
 
-// Sort tasks based on due dates
-function sortTasks() {
-  const taskContainer = document.getElementById("task-container");
-  const tasks = Array.from(taskContainer.children);
+// Check and decrement tasks if 24 hours have passed
+function handleDailyDecrement() {
+  const lastUpdate = localStorage.getItem("lastUpdate");
+  const now = Date.now();
 
-  tasks.sort((a, b) => {
-    const aInterval = parseInt(a.querySelector("#interval").innerText.split(" ")[0], 10);
-    const bInterval = parseInt(b.querySelector("#interval").innerText.split(" ")[0], 10);
+  // If no timestamp or more than 24 hours have passed, decrement
+  if (!lastUpdate || now - parseInt(lastUpdate, 10) >= 24 * 60 * 60 * 1000) {
+    decrementDays();
+    localStorage.setItem("lastUpdate", now); // Update the timestamp
+  }
+}
 
-    return aInterval - bInterval; // Sort by interval in ascending order
+// Decrement remaining days for all tasks
+function decrementDays() {
+  const tasks = document.querySelectorAll(".flex-stripe");
+  tasks.forEach((task) => {
+    const lastDoneElement = task.querySelector("#last-done");
+    if (lastDoneElement) {
+      const lastDone = parseInt(lastDoneElement.innerText, 10);
+      lastDoneElement.innerText = lastDone - 1; // Decrement
+    }
   });
 
-  // Append sorted tasks back to the container
-  tasks.forEach((task) => taskContainer.appendChild(task));
+  saveTasks(); // Save changes
+  updateTaskStyles(); // Refresh styles
 }
 
-// Auto-update tasks at midnight
+// Schedule future decrements at midnight
 function scheduleDailyUpdate() {
-  sortTasks(); // Initial sort immediately
   const now = new Date();
   const midnight = new Date();
-  midnight.setHours(24, 0, 0, 0); // Set to midnight
+  midnight.setHours(24, 0, 0, 0);
   const timeUntilMidnight = midnight.getTime() - now.getTime();
 
   setTimeout(() => {
-    sortTasks(); // Initial sort at midnight
-    setInterval(sortTasks, 24 * 60 * 60 * 1000); // Repeat every 24 hours
+    decrementDays(); // First decrement at midnight
+    setInterval(decrementDays, 24 * 60 * 60 * 1000); // Repeat daily
   }, timeUntilMidnight);
 }
 
-// Initialize the daily scheduler
-scheduleDailyUpdate();
+// Update task styles based on remaining days
+function updateTaskStyles() {
+  const tasks = document.querySelectorAll(".flex-stripe");
+
+  tasks.forEach((task) => {
+    const lastDoneElement = task.querySelector("#last-done");
+    if (!lastDoneElement) return;
+
+    const lastDone = parseInt(lastDoneElement.innerText, 10);
+    if (lastDone < 0) {
+      task.style.backgroundColor = "#BC4749"; // Overdue
+    } else if (lastDone <= 3) {
+      task.style.backgroundColor = "#D7DC5D"; // Close to due
+    } else {
+      task.style.backgroundColor = "#6A994E"; // Default
+    }
+  });
+}
