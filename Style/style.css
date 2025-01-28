@@ -7,6 +7,7 @@
   font-weight: 400;
   font-size: larger;
 }
+
 #completed {
   visibility: hidden;
 }
@@ -14,39 +15,51 @@
 body {
   background-color: #f2e8cf;
 }
+
 .flex-stripe {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  justify-content: space-around;
+  display: grid;
+  grid-template-columns: 2fr repeat(3, 1fr) repeat(3, auto); /* Flexible columns */
   align-items: center;
   background-color: #6a994e;
-  margin-left: 50px;
-  margin-right: 50px;
+  margin: 20px 50px;
   border-radius: 15px;
-
-  margin-top: 20px;
   min-height: 50px;
+  padding: 10px;
+  gap: 10px;
+  overflow: hidden; /* Ensures no content spills out */
 }
+
+.flex-stripe p {
+  white-space: nowrap; /* Prevents line breaks */
+  overflow: hidden; /* Ensures content stays within the container */
+  text-overflow: ellipsis; /* Adds '...' for overflowing text */
+}
+
 .flex-stripe-over {
   background-color: #f2e8cf;
 }
+
 label {
   display: flex; /* Ensure label uses flexbox */
   justify-content: center; /* Center horizontally */
   align-items: center; /* Center vertically */
 }
+
 input[type="checkbox"] {
   display: block; /* Ensure the checkbox is treated as a block element */
   margin: 0; /* Remove any default margins */
   width: 40px;
   height: 40px;
+  justify-self: center;
 }
+
 .checkbox-hidden {
   visibility: hidden;
 }
-.buttons {
+
+.button {
   margin: auto;
+  justify-self: center;
 }
 
 .edit-task {
