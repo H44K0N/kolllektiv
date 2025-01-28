@@ -12,7 +12,7 @@ function done(currentCheckbox) {
   const personElement = flexStripe.querySelector("#person");
 
   // Update "last-done" to 0 days
-  if (lastDoneElement) lastDoneElement.innerText = "0 dager";
+  if (lastDoneElement) lastDoneElement.innerText = "0";
 
   // Automatically uncheck the checkbox after 2 seconds
   setTimeout(() => {
@@ -40,8 +40,8 @@ function addTask() {
 
   newTask.innerHTML = `
     <p id="task-name">New Task</p>
-    <p id="interval">7 dager</p>
-    <p id="last-done">0 dager</p>
+    <p id="interval">7</p>
+    <p id="last-done">7</p>
     <p id="person">Haakon</p>
     <label>
       <input type="checkbox" onclick="done(this)" />
@@ -72,14 +72,14 @@ function editTask(editButton) {
     flexStripe.querySelector("#task-name").innerText = taskName;
   }
   if (interval) {
-    flexStripe.querySelector("#interval").innerText = `${interval} dager`;
+    flexStripe.querySelector("#interval").innerText = `${interval}`;
   }
   if (person) {
     flexStripe.querySelector("#person").innerText = person;
   }
 
   // Reset the "last-done" value
-  flexStripe.querySelector("#last-done").innerText = "0 dager";
+  flexStripe.querySelector("#last-done").innerText = "0";
 
   // Save updated tasks to Local Storage
   saveTasks();

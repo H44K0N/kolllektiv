@@ -33,6 +33,7 @@ body {
   white-space: nowrap; /* Prevents line breaks */
   overflow: hidden; /* Ensures content stays within the container */
   text-overflow: ellipsis; /* Adds '...' for overflowing text */
+  text-align: center;
 }
 
 .flex-stripe-over {
