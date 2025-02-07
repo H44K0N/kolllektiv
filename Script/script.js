@@ -1,49 +1,59 @@
-document.addEventListener("DOMContentLoaded", () => {
-  setTimeout(() => {
-    if (!document.fullscreenElement) {
-      if (document.documentElement.requestFullscreen) {
-        document.documentElement.requestFullscreen();
-      } else if (document.documentElement.mozRequestFullScreen) { // Firefox
-        document.documentElement.mozRequestFullScreen();
-      } else if (document.documentElement.webkitRequestFullscreen) { // Chrome, Safari, Opera
-        document.documentElement.webkitRequestFullscreen();
-      } else if (document.documentElement.msRequestFullscreen) { // IE/Edge
-        document.documentElement.msRequestFullscreen();
-      }
-    }
-  }, 1000); // Delay for 1 second to ensure user interaction
+function enterFullScreen() {
+  const doc = document.documentElement; // Select the full page
+
+  if (doc.requestFullscreen) {
+    doc.requestFullscreen().catch(err => console.warn("Full-screen request failed:", err));
+  } else if (doc.mozRequestFullScreen) { // Firefox
+    doc.mozRequestFullScreen();
+  } else if (doc.webkitRequestFullscreen) { // Chrome, Safari, Opera
+    doc.webkitRequestFullscreen();
+  } else if (doc.msRequestFullscreen) { // Edge, IE
+    doc.msRequestFullscreen();
+  }
+}
+
+// Auto-request full-screen mode after user interaction
+document.addEventListener("click", () => {
+  if (!document.fullscreenElement) {
+    enterFullScreen();
+  }
 });
+
+// Ensure full-screen stays active on orientation change (mobile/tablet)
+window.addEventListener("orientationchange", () => {
+  if (!document.fullscreenElement) {
+    enterFullScreen();
+  }
+});
+
 
 let wakeLock = null;
 
 async function requestWakeLock() {
   try {
-    wakeLock = await navigator.wakeLock.request('screen');
-    console.log('Wake Lock is active.');
-    wakeLock.addEventListener('release', () => {
-      console.log('Wake Lock released.');
+    wakeLock = await navigator.wakeLock.request("screen");
+    console.log("Screen Wake Lock is active.");
+
+    // If the wake lock is released (e.g., low battery), try to request it again
+    wakeLock.addEventListener("release", () => {
+      console.log("Screen Wake Lock released. Re-requesting...");
+      requestWakeLock();
     });
   } catch (err) {
-    console.error('Failed to acquire Wake Lock:', err);
+    console.error("Failed to acquire Wake Lock:", err);
   }
 }
 
-function releaseWakeLock() {
-  if (wakeLock) {
-    wakeLock.release().then(() => {
-      wakeLock = null;
-      console.log('Wake Lock released.');
-    });
-  }
-}
-
-// Request Wake Lock when the page is visible
-document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'visible') {
+// Request wake lock when the page is visible
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") {
     requestWakeLock();
-  } else {
-    releaseWakeLock();
   }
+});
+
+// Initial wake lock request
+document.addEventListener("DOMContentLoaded", () => {
+  requestWakeLock();
 });
 
 
