@@ -18,7 +18,7 @@ body {
 
 .flex-stripe {
   display: grid;
-  grid-template-columns: 2fr repeat(3, 1fr) repeat(3, auto); /* Flexible columns */
+  grid-template-columns: 1fr 2fr repeat(3, 1fr) repeat(2, auto); /* Flexible columns */
   align-items: center;
   background-color: initial;
   margin: 20px 50px;
@@ -28,7 +28,6 @@ body {
   gap: 10px;
   overflow: hidden; /* Ensures no content spills out */
 }
-
 .flex-stripe p {
   white-space: nowrap; /* Prevents line breaks */
   overflow: hidden; /* Ensures content stays within the container */
@@ -114,4 +113,30 @@ input[type="checkbox"] {
 /* Add hover effect for the button */
 #add-task-btn:hover {
   background-color: #45a049;
+}
+
+/* Make text overflow slide to reveal longer task names */
+.marquee {
+  width: 150px; /* Adjust to fit task container */
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.marquee-content {
+  display: inline-block;
+  white-space: nowrap;
+  animation: marquee-scroll 5s linear infinite;
+  min-width: 100%;
+}
+
+@keyframes marquee-scroll {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
 }

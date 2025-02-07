@@ -30,6 +30,10 @@ document.addEventListener('visibilitychange', () => {
   }
 });
 
+
+
+
+
 const persons = ["Haakon", "Soro", "Henrik"]; // List of persons responsible
 
 // Initialize tasks on page load
@@ -99,7 +103,9 @@ function addTask() {
      <label>
       <input type="checkbox" onclick="done(this)" />
     </label>
-  <p id="task-name">New Task</p>
+    <div class="marquee">
+    <div class="marquee-content">New Task</div>
+    </div>
     <p id="interval">7</p>
     <p id="last-done">7</p>
     <p id="person">Haakon</p>
@@ -149,21 +155,22 @@ function deleteTask(deleteButton) {
 function saveTasks() {
   const taskContainer = document.getElementById("task-container");
   const tasks = Array.from(taskContainer.children).map((task) => ({
-    name: task.querySelector("#task-name").innerText,
+    name: task.querySelector(".marquee-content").innerText, // Fix: Correct selector for task name
     interval: task.querySelector("#interval").innerText,
     lastDone: task.querySelector("#last-done").innerText,
-    person: task.querySelector("#person").innerText,
+    person: task.querySelector("#person").innerText
   }));
 
   localStorage.setItem("tasks", JSON.stringify(tasks));
 }
+
 
 // Load tasks from Local Storage
 function loadTasks() {
   const taskContainer = document.getElementById("task-container");
   taskContainer.innerHTML = ""; // Clear existing tasks
 
-  const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+  const tasks = JSON.parse(localStorage.getItem("tasks")) || []; // Load tasks from localStorage
   tasks.forEach((task) => {
     const taskElement = document.createElement("div");
     taskElement.classList.add("flex-stripe");
@@ -172,7 +179,9 @@ function loadTasks() {
       <label>
         <input type="checkbox" onclick="done(this)" />
       </label>
-    <p id="task-name">${task.name}</p>
+      <div class="marquee">
+        <div class="marquee-content">${task.name}</div>
+      </div>
       <p id="interval">${task.interval}</p>
       <p id="last-done">${task.lastDone}</p>
       <p id="person">${task.person}</p>
@@ -187,9 +196,11 @@ function loadTasks() {
     taskContainer.appendChild(taskElement);
   });
 
-  updateTaskStyles(); // Update styles after loading
+  updateTaskStyles(); // Ensure correct styling on reload
+  applyMarqueeEffect(); // Ensure scrolling effect still works
   sortTasks();
 }
+
 
 // Check and decrement tasks if 24 hours have passed
 function handleDailyDecrement() {
