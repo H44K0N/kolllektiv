@@ -5,7 +5,7 @@
   box-sizing: border-box; /* Include padding and borders in element size */
   font-family: "kanit";
   font-weight: 400;
-  font-size: larger;
+  font-size: large;
 }
 html,
 body {
@@ -126,7 +126,7 @@ input[type="checkbox"] {
 
 /* Make text overflow slide to reveal longer task names */
 .marquee {
-  width: 350px; /* Adjust as needed */
+  width: 270px; /* Adjust as needed */
   overflow: hidden;
   white-space: nowrap;
   position: relative;
