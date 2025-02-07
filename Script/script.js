@@ -96,13 +96,13 @@ function addTask() {
   newTask.classList.add("flex-stripe");
 
   newTask.innerHTML = `
-    <p id="task-name">New Task</p>
+     <label>
+      <input type="checkbox" onclick="done(this)" />
+    </label>
+  <p id="task-name">New Task</p>
     <p id="interval">7</p>
     <p id="last-done">7</p>
     <p id="person">Haakon</p>
-    <label>
-      <input type="checkbox" onclick="done(this)" />
-    </label>
     <button class="edit-task" onclick="editTask(this)">
       <i class="fas fa-edit"></i>
     </button>
@@ -169,13 +169,13 @@ function loadTasks() {
     taskElement.classList.add("flex-stripe");
 
     taskElement.innerHTML = `
-      <p id="task-name">${task.name}</p>
-      <p id="interval">${task.interval}</p>
-      <p id="last-done">${task.lastDone}</p>
-      <p id="person">${task.person}</p>
       <label>
         <input type="checkbox" onclick="done(this)" />
       </label>
+    <p id="task-name">${task.name}</p>
+      <p id="interval">${task.interval}</p>
+      <p id="last-done">${task.lastDone}</p>
+      <p id="person">${task.person}</p>
       <button class="edit-task" onclick="editTask(this)">
         <i class="fas fa-edit"></i>
       </button>

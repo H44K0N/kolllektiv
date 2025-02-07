@@ -30,13 +30,14 @@
     </div>
     <div id="task-container">
       <div class="flex-stripe">
+        <label>
+          <input type="checkbox" id="myCheckbox" onclick="done(this)" />
+        </label>
         <p id="task-name">Vaske gulv</p>
         <p id="interval">14 dager</p>
         <p id="last-done">12 dager</p>
         <p id="person">Haakon</p>
-        <label>
-          <input type="checkbox" id="myCheckbox" onclick="done(this)" />
-        </label>
+
         <button class="edit-task" onclick="editTask(this)">
           <i class="fas fa-edit"></i>
           <!-- Edit icon (pencil) -->
