@@ -104,7 +104,7 @@ function addTask() {
       <input type="checkbox" onclick="done(this)" />
     </label>
     <div class="marquee">
-    <div class="marquee-content">New Task</div>
+      <div class="marquee-content">New Task</div>
     </div>
     <p id="interval">7</p>
     <p id="last-done">7</p>
@@ -119,27 +119,43 @@ function addTask() {
 
   taskContainer.appendChild(newTask);
 
-  saveTasks(); // Save the new task
+  saveTasks(); // Save only the new task
+
+  // Apply marquee effect ONLY to the new task
+  applyMarqueeEffect();
+  updateTaskStyles();
 }
+
+
+
 
 // Edit a task
 function editTask(editButton) {
   const flexStripe = editButton.closest(".flex-stripe");
 
-  const taskName = prompt("Enter the task name:", flexStripe.querySelector("#task-name").innerText);
-  const interval = prompt("Enter the interval (in days):", flexStripe.querySelector("#interval").innerText);
-  const lastDone = prompt("Enter days remaining until due:", flexStripe.querySelector("#last-done").innerText);
-  const person = prompt("Enter the person responsible:", flexStripe.querySelector("#person").innerText);
+  // Get the correct elements
+  const taskNameElement = flexStripe.querySelector(".marquee-content"); // Fix: Now correctly selects the task name
+  const intervalElement = flexStripe.querySelector("#interval");
+  const lastDoneElement = flexStripe.querySelector("#last-done");
+  const personElement = flexStripe.querySelector("#person");
 
-  if (taskName) flexStripe.querySelector("#task-name").innerText = taskName;
-  if (interval) flexStripe.querySelector("#interval").innerText = interval;
-  if (lastDone) flexStripe.querySelector("#last-done").innerText = lastDone;
-  if (person) flexStripe.querySelector("#person").innerText = person;
+  // Prompt the user for new values
+  const taskName = prompt("Enter the task name:", taskNameElement.innerText);
+  const interval = prompt("Enter the interval (in days):", intervalElement.innerText);
+  const lastDone = prompt("Enter days remaining until due:", lastDoneElement.innerText);
+  const person = prompt("Enter the person responsible:", personElement.innerText);
+
+  // Update only if the user enters a value
+  if (taskName !== null) taskNameElement.innerText = taskName;
+  if (interval !== null) intervalElement.innerText = interval;
+  if (lastDone !== null) lastDoneElement.innerText = lastDone;
+  if (person !== null) personElement.innerText = person;
 
   saveTasks(); // Save the edits
   updateTaskStyles(); // Update styles
   sortTasks(); // Re-sort tasks
 }
+
 
 // Delete a task
 function deleteTask(deleteButton) {
@@ -170,7 +186,8 @@ function loadTasks() {
   const taskContainer = document.getElementById("task-container");
   taskContainer.innerHTML = ""; // Clear existing tasks
 
-  const tasks = JSON.parse(localStorage.getItem("tasks")) || []; // Load tasks from localStorage
+  const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
   tasks.forEach((task) => {
     const taskElement = document.createElement("div");
     taskElement.classList.add("flex-stripe");
@@ -196,10 +213,10 @@ function loadTasks() {
     taskContainer.appendChild(taskElement);
   });
 
-  updateTaskStyles(); // Ensure correct styling on reload
-  applyMarqueeEffect(); // Ensure scrolling effect still works
-  sortTasks();
+  updateTaskStyles(); // Ensure correct styling
+  applyMarqueeEffect(); // Apply effect only where needed
 }
+
 
 
 // Check and decrement tasks if 24 hours have passed
@@ -260,3 +277,55 @@ function updateTaskStyles() {
     }
   });
 }
+
+
+function applyMarqueeEffect() {
+  document.querySelectorAll(".marquee").forEach((marquee) => {
+    const content = marquee.querySelector(".marquee-content");
+
+    // Remove any existing duplicates before adding a new one
+    const existingClone = marquee.querySelector(".marquee-duplicate");
+    if (existingClone) existingClone.remove();
+
+    // Check if the text overflows
+    if (content.scrollWidth > marquee.clientWidth) {
+      // Clone the content only if needed
+      const clone = content.cloneNode(true);
+      clone.classList.add("marquee-duplicate");
+      marquee.appendChild(clone);
+
+      // Get text width to calculate spacing and animation speed
+      const textWidth = content.scrollWidth;
+
+      // Set up proper positioning
+      marquee.style.display = "flex";
+      marquee.style.overflow = "hidden";
+      marquee.style.whiteSpace = "nowrap";
+      marquee.style.position = "relative";
+
+      // Ensure the duplicate starts exactly after the first one
+      clone.style.position = "absolute";
+      clone.style.left = `${textWidth}px`;
+
+      // Dynamically adjust speed based on text length
+      const duration = Math.max(textWidth / 50, 5);
+
+      // Apply identical animation to both instances
+      content.style.animation = `marquee-scroll ${duration}s linear infinite`;
+      clone.style.animation = `marquee-scroll ${duration}s linear infinite`;
+    } else {
+      // Disable animation if the text fits
+      content.style.animation = "none";
+    }
+  });
+}
+
+
+
+
+// Run this function when tasks are loaded or added
+
+
+document.getElementById("add-task-btn").addEventListener("click", () => {
+  applyMarqueeEffect();
+});

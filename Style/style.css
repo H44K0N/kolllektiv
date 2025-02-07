@@ -117,7 +117,7 @@ input[type="checkbox"] {
 
 /* Make text overflow slide to reveal longer task names */
 .marquee {
-  width: 150px; /* Adjust to fit task container */
+  width: 350px; /* Adjust as needed */
   overflow: hidden;
   white-space: nowrap;
   position: relative;
@@ -128,15 +128,14 @@ input[type="checkbox"] {
 .marquee-content {
   display: inline-block;
   white-space: nowrap;
-  animation: marquee-scroll 5s linear infinite;
-  min-width: 100%;
+  min-width: fit-content;
 }
 
 @keyframes marquee-scroll {
-  0% {
-    transform: translateX(100%);
+  from {
+    transform: translateX(0%);
   }
-  100% {
+  to {
     transform: translateX(-100%);
   }
 }
