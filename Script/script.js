@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-const persons = ["Haakon", "Soro", "Henrik"]; // List of persons responsible
+const persons = ["Haakon", "Soro", "Jonas"]; // List of persons responsible
 
 // Initialize tasks on page load
 window.onload = () => {
